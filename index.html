@@ -3,101 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minimal Model Leaderboard</title>
+    <title>Simplified Model Leaderboard</title>
     <style>
+        :root {
+            --border-color: #ccc;
+            --header-bg: #f2f2f2;
+            --row-hover-bg: #e9e9e9;
+            --badge-bg: #e0e0e0;
+            --badge-text: #333;
+            --link-color: #007bff;
+            --input-bg: #fff;
+            --input-border: #ccc;
+            --text-color: #333;
+            --bg-color: #fff;
+            --button-bg: #eee;
+            --button-border: #ccc;
+            --button-hover-bg: #ddd;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --border-color: #555;
+                --header-bg: #333;
+                --row-hover-bg: #444;
+                --badge-bg: #555;
+                --badge-text: #eee;
+                --link-color: #58a6ff;
+                --input-bg: #333;
+                --input-border: #555;
+                --text-color: #eee;
+                --bg-color: #222;
+                --button-bg: #444;
+                --button-border: #666;
+                --button-hover-bg: #555;
+            }
+        }
+
         body {
             font-family: sans-serif;
-            line-height: 1.6;
-            padding: 1em;
-            max-width: 900px;
-            margin: 20px auto;
-            background-color: #f9f9f9;
-            color: #333;
+            margin: 1.5rem;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.5;
         }
+
         .controls {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #eee;
-            border-radius: 8px;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
         }
-        .controls label {
-            margin-right: 5px;
-            font-weight: bold;
+
+        .controls > div {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
         }
-        .controls select,
-        .controls input[type="text"] {
-            padding: 8px 10px;
-            border: 1px solid #ccc;
+
+        label {
+            display: inline-flex; /* Changed to inline-flex */
+            align-items: center;
+            gap: 0.3rem;
+            white-space: nowrap; /* Prevent wrapping */
+        }
+
+        select, input[type="text"], button {
+            padding: 0.5rem;
+            border: 1px solid var(--input-border);
+            background-color: var(--input-bg);
+            color: var(--text-color);
             border-radius: 4px;
-            margin-right: 10px;
         }
-        .controls input[type="text"] {
-            flex-grow: 1;
-            min-width: 150px;
+
+        button {
+            cursor: pointer;
+            background-color: var(--button-bg);
+            border-color: var(--button-border);
         }
+
+        button:hover {
+            background-color: var(--button-hover-bg);
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-            background-color: #fff;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-top: 1rem;
         }
+
         th, td {
-            border: 1px solid #ddd;
-            padding: 10px 12px;
+            padding: 0.6rem 0.8rem;
             text-align: left;
+            border-bottom: 1px solid var(--border-color);
         }
+
         th {
-            background-color: #f2f2f2;
+            background-color: var(--header-bg);
             font-weight: bold;
         }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
+
+        tbody tr:hover {
+            background-color: var(--row-hover-bg);
         }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        .rank {
-            text-align: center;
-            font-weight: bold;
-        }
-        .rating {
+
+        td:first-child, th:first-child {
             text-align: right;
-            font-family: monospace;
+            width: 40px; /* Adjust as needed */
         }
-         /* Basic dark mode */
-        @media (prefers-color-scheme: dark) {
-            body {
-                background-color: #222;
-                color: #eee;
-            }
+        td:nth-child(3), th:nth-child(3) {
+            text-align: right;
+            width: 60px; /* Adjust as needed */
+        }
+         td:nth-child(4), th:nth-child(4) {
+            text-align: right;
+            width: 80px; /* Adjust as needed */
+         }
+
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.1rem 0.4rem;
+            border-radius: 1rem;
+            background-color: var(--badge-bg);
+            color: var(--badge-text);
+            margin-left: 0.5rem;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        /* Basic responsiveness */
+        @media (max-width: 768px) {
             .controls {
-                background-color: #333;
+                flex-direction: column;
+                align-items: flex-start;
             }
-            .controls select,
-            .controls input[type="text"] {
-                 background-color: #444;
-                 color: #eee;
-                 border-color: #555;
+            th, td {
+                padding: 0.4rem;
+                font-size: 0.9em;
             }
-            table {
-                 background-color: #2a2a2a;
-                 box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-            }
-             th, td {
-                 border-color: #444;
-            }
-             th {
-                 background-color: #3a3a3a;
-            }
-             tr:nth-child(even) {
-                 background-color: #333;
-            }
-             tr:hover {
-                 background-color: #404040;
+            .badge {
+                display: block; /* Stack badge below on small screens */
+                margin-left: 0;
+                margin-top: 0.2rem;
             }
         }
     </style>
@@ -108,8 +165,8 @@
 
     <div class="controls">
         <div>
-            <label for="paradigm-select">Paradigm:</label>
-            <select id="paradigm-select">
+            <label for="paradigmSelect">Paradigm:</label>
+            <select id="paradigmSelect">
                 <option value="text">Text</option>
                 <option value="vision">Vision</option>
                 <option value="image_arena">Image (LM Arena)</option>
@@ -118,192 +175,746 @@
             </select>
         </div>
         <div>
-            <label for="category-select">Category:</label>
-            <select id="category-select">
-                <!-- Options populated by JS -->
+            <label for="categorySelect">Category:</label>
+            <select id="categorySelect"></select>
+        </div>
+         <div>
+            <label for="styleControlCheckbox" id="styleControlLabel" style="display: none;">
+                <input type="checkbox" id="styleControlCheckbox"> Style Control
+            </label>
+        </div>
+         <div>
+            <label for="searchBox">Search:</label>
+            <input type="text" id="searchBox" placeholder="Filter models...">
+        </div>
+         <div>
+            <label for="openSourceCheckbox">
+                <input type="checkbox" id="openSourceCheckbox"> Open Models Only
+            </label>
+        </div>
+         <div>
+            <label for="filterStrategySelect">Filter Similar:</label>
+            <select id="filterStrategySelect">
+                <option value="showAll">Show All</option>
+                <option value="hideDeprecated">Hide Deprecated</option>
+                <option value="hideOld">Hide Old</option>
+                <option value="onePerOrg">Best per Org</option>
             </select>
         </div>
         <div>
-            <label for="search-input">Search:</label>
-            <input type="text" id="search-input" placeholder="Filter models...">
+            <label>Rank Strategy:</label>
+            <label><input type="radio" name="rankStrategy" value="comparable" checked> Comparable</label>
+            <label><input type="radio" name="rankStrategy" value="league"> League</label>
         </div>
     </div>
 
-    <table id="leaderboard-table">
+    <table id="leaderboardTable">
         <thead>
             <tr>
                 <th>Rank</th>
                 <th>Model</th>
                 <th>Rating</th>
+                <th id="ciHeader" style="display: none;">95% CI</th>
             </tr>
         </thead>
         <tbody>
-            <!-- Rows populated by JS -->
-            <tr><td colspan="3">Loading data...</td></tr>
+            <!-- Rows will be inserted here by JavaScript -->
         </tbody>
     </table>
 
     <script>
-        const paradigmSelect = document.getElementById('paradigm-select');
-        const categorySelect = document.getElementById('category-select');
-        const searchInput = document.getElementById('search-input');
-        const tableBody = document.querySelector('#leaderboard-table tbody');
-
-        let allData = {}; // To store loaded JSON data
-        let categoryOptions = {}; // To store categories for each paradigm
-
-        // Available categories (mirroring the Svelte app)
-        const paradigmCategories = {
-            text: {
-                "Overall": "full", "Hard prompts": "hard_6", "Hard prompts (english)": "hard_english_6",
-                "Longer query": "long_user", "Multiturn": "multiturn", "English": "english",
-                "Math": "math", "Instruction following": "if", "Creative writing": "creative_writing",
-                "Coding": "coding", "Chinese": "chinese", "French": "french", "German": "german",
-                "Japanese": "japanese", "Korean": "korean", "Russian": "russian", "Spanish": "spanish",
-                "Exclude <5 tok query": "no_short", "Exclude refusal": "no_refusal"
-            },
-            vision: { "Overall": "full", "English": "english", "Chinese": "chinese" },
-            image_arena: { "Overall": "full" },
-            image_artificial: { "Overall": "full" },
-            image_fal: { "Overall": "full" }
+        // --- Model Metadata (Simplified) ---
+        // In a real app, this would be more extensive or fetched
+        const modelMetadata = {
+          "amazon-nova-lite-v1.0": { organization: "Amazon" },
+          "amazon-nova-micro-v1.0": { organization: "Amazon" },
+          "amazon-nova-pro-v1.0": { organization: "Amazon" },
+          "athene-70b-0725": { isOpen: true, organization: "NexusFlow" },
+          "athene-v2-chat": { isOpen: true, organization: "NexusFlow" },
+          "bard-jan-24-gemini-pro": { deprecated: true, organization: "Google" },
+          "c4ai-aya-expanse-32b": { isOpen: true, organization: "Cohere" },
+          "c4ai-aya-expanse-8b": { isOpen: true, organization: "Cohere" },
+          "chatglm-6b": { isOpen: true },
+          "chatglm2-6b": { isOpen: true },
+          "chatglm3-6b": { isOpen: true },
+          "chatgpt-4o-latest-20240808": { deprecated: true, organization: "OpenAI" },
+          "chatgpt-4o-latest-20240903": { deprecated: true, organization: "OpenAI" },
+          "chatgpt-4o-latest-20241120": { organization: "OpenAI" },
+          "chatgpt-4o-latest-20250129": { deprecated: true, organization: "OpenAI" },
+          "chatgpt-4o-latest-20250326": { organization: "OpenAI" },
+          "claude-1": { organization: "Anthropic" },
+          "claude-2.0": { organization: "Anthropic" },
+          "claude-2.1": { organization: "Anthropic" },
+          "claude-3-5-haiku-20241022": { organization: "Anthropic" },
+          "claude-3-5-sonnet-20240620": { organization: "Anthropic" },
+          "claude-3-5-sonnet-20241022": { organization: "Anthropic" },
+          "claude-3-7-sonnet-20250219": { organization: "Anthropic" },
+          "claude-3-7-sonnet-20250219-thinking-32k": { organization: "Anthropic" },
+          "claude-3-haiku-20240307": { organization: "Anthropic" },
+          "claude-3-opus-20240229": { organization: "Anthropic" },
+          "claude-3-sonnet-20240229": { organization: "Anthropic" },
+          "claude-instant-1": { organization: "Anthropic" },
+          "codellama-34b-instruct": { isOpen: true },
+          "codellama-70b-instruct": { isOpen: true },
+          "command-r": { isOpen: true, organization: "Cohere" },
+          "command-r-08-2024": { isOpen: true, organization: "Cohere" },
+          "command-r-plus": { isOpen: true, organization: "Cohere" },
+          "command-r-plus-08-2024": { isOpen: true, organization: "Cohere" },
+          "command-a-03-2025": { isOpen: true, organization: "Cohere" },
+          "dbrx-instruct-preview": { isOpen: true },
+          "deepseek-coder-v2": { deprecated: true, isOpen: true, organization: "DeepSeek" },
+          "deepseek-coder-v2-0724": { deprecated: true, isOpen: true, organization: "DeepSeek" },
+          "deepseek-llm-67b-chat": { deprecated: true, isOpen: true, organization: "DeepSeek" },
+          "deepseek-v2-api-0628": { deprecated: true, isOpen: true, organization: "DeepSeek" },
+          "deepseek-v2.5": { deprecated: true, isOpen: true, organization: "DeepSeek" },
+          "deepseek-v2.5-1210": { deprecated: true, isOpen: true, organization: "DeepSeek" },
+          "deepseek-r1": { isOpen: true, organization: "DeepSeek" },
+          "deepseek-v3": { isOpen: true, organization: "DeepSeek" },
+          "deepseek-v3-0324": { isOpen: true, organization: "DeepSeek" },
+          "dolly-v2-12b": { isOpen: true },
+          "falcon-180b-chat": { isOpen: true },
+          "fastchat-t5-3b": { isOpen: true },
+          "gemini-1.5-flash-001": { deprecated: true, organization: "Google" },
+          "gemini-1.5-flash-002": { organization: "Google" },
+          "gemini-1.5-flash-8b-001": { organization: "Google" },
+          "gemini-1.5-flash-8b-exp-0827": { deprecated: true, organization: "Google" },
+          "gemini-1.5-flash-exp-0827": { deprecated: true, organization: "Google" },
+          "gemini-1.5-pro-001": { deprecated: true, organization: "Google" },
+          "gemini-1.5-pro-002": { organization: "Google" },
+          "gemini-1.5-pro-api-0409-preview": { deprecated: true, organization: "Google" },
+          "gemini-1.5-pro-exp-0801": { deprecated: true, organization: "Google" },
+          "gemini-1.5-pro-exp-0827": { deprecated: true, organization: "Google" },
+          "gemini-2.0-flash-001": { organization: "Google" },
+          "gemini-2.0-flash-exp": { deprecated: true, organization: "Google" },
+          "gemini-2.0-flash-thinking-exp-01-21": { organization: "Google" },
+          "gemini-2.0-flash-thinking-exp-1219": { deprecated: true, organization: "Google" },
+          "gemini-2.0-pro-exp-02-05": { deprecated: true, organization: "Google" },
+          "gemini-2.0-flash-lite-preview-02-05": { organization: "Google" },
+          "gemini-2.5-pro-exp-03-25": { organization: "Google" },
+          "gemini-advanced-0514": { deprecated: true, organization: "Google" },
+          "gemini-exp-1114": { deprecated: true, organization: "Google" },
+          "gemini-exp-1121": { deprecated: true, organization: "Google" },
+          "gemini-exp-1206": { deprecated: true, organization: "Google" },
+          "gemini-pro": { deprecated: true, organization: "Google" },
+          "gemini-pro-dev-api": { deprecated: true, organization: "Google" },
+          "gemma-1.1-2b-it": { deprecated: true, isOpen: true, organization: "Google Open" },
+          "gemma-1.1-7b-it": { deprecated: true, isOpen: true, organization: "Google Open" },
+          "gemma-2-27b-it": { isOpen: true, organization: "Google Open" },
+          "gemma-2-2b-it": { isOpen: true, organization: "Google Open" },
+          "gemma-2-9b-it": { isOpen: true, organization: "Google Open" },
+          "gemma-2-9b-it-simpo": { isOpen: true, organization: "Google Open" },
+          "gemma-3-27b-it": { isOpen: true, organization: "Google Open" },
+          "gemma-2b-it": { deprecated: true, isOpen: true, organization: "Google Open" },
+          "gemma-7b-it": { deprecated: true, isOpen: true, organization: "Google Open" },
+          "glm-4-0116": { organization: "Zhipu" },
+          "glm-4-0520": { organization: "Zhipu" },
+          "glm-4-plus": { organization: "Zhipu" },
+          "gpt-3.5-turbo-0125": { organization: "OpenAI" },
+          "gpt-3.5-turbo-0314": { organization: "OpenAI" },
+          "gpt-3.5-turbo-0613": { organization: "OpenAI" },
+          "gpt-3.5-turbo-1106": { organization: "OpenAI" },
+          "gpt-4-0125-preview": { organization: "OpenAI" },
+          "gpt-4-0314": { organization: "OpenAI" },
+          "gpt-4-0613": { organization: "OpenAI" },
+          "gpt-4-1106-preview": { organization: "OpenAI" },
+          "gpt-4-turbo-2024-04-09": { organization: "OpenAI" },
+          "gpt-4o-2024-05-13": { organization: "OpenAI" },
+          "gpt-4o-2024-08-06": { organization: "OpenAI" },
+          "gpt-4o-mini-2024-07-18": { organization: "OpenAI" },
+          "gpt-4.5-preview-2025-02-27": { organization: "OpenAI" },
+          "gpt4all-13b-snoozy": { isOpen: true },
+          "granite-3.0-2b-instruct": { isOpen: true },
+          "granite-3.0-8b-instruct": { isOpen: true },
+          "granite-3.1-2b-instruct": { isOpen: true },
+          "granite-3.1-8b-instruct": { isOpen: true },
+          "grok-2-2024-08-13": { organization: "xAI" },
+          "grok-2-mini-2024-08-13": { organization: "xAI" },
+          "early-grok-3": { deprecated: true, organization: "xAI" },
+          "grok-3-preview-02-24": { organization: "xAI" },
+          "guanaco-33b": { isOpen: true },
+          "internlm2_5-20b-chat": { isOpen: true },
+          "internvl2-26b": { isOpen: true },
+          "internvl2-4b": { isOpen: true },
+          "jamba-1.5-large": { isOpen: true, organization: "AI21" },
+          "jamba-1.5-mini": { isOpen: true, organization: "AI21" },
+          "koala-13b": { isOpen: true },
+          "llama-13b": { deprecated: true, isOpen: true, organization: "Meta" },
+          "tulu-2-dpo-70b": { deprecated: true, isOpen: true, organization: "Allen" },
+          "llama-2-13b-chat": { deprecated: true, isOpen: true, organization: "Meta" },
+          "llama-2-70b-chat": { deprecated: true, isOpen: true, organization: "Meta" },
+          "llama-2-7b-chat": { deprecated: true, isOpen: true, organization: "Meta" },
+          "llama-3-70b-instruct": { isOpen: true, organization: "Meta" },
+          "llama-3-8b-instruct": { isOpen: true, organization: "Meta" },
+          "llama-3.1-405b-instruct-bf16": { isOpen: true, organization: "Meta" },
+          "llama-3.1-405b-instruct-fp8": { isOpen: true, organization: "Meta" },
+          "llama-3.1-70b-instruct": { isOpen: true, organization: "Meta" },
+          "llama-3.1-8b-instruct": { isOpen: true, organization: "Meta" },
+          "llama-3.1-tulu-3-70b": { isOpen: true, organization: "Allen" },
+          "llama-3.1-tulu-3-8b": { isOpen: true, organization: "Allen" },
+          "llama-3.1-nemotron-51b-instruct": { isOpen: true, organization: "NVIDIA" },
+          "llama-3.1-nemotron-70b-instruct": { isOpen: true, organization: "NVIDIA" },
+          "llama-3.2-1b-instruct": { isOpen: true, organization: "Meta" },
+          "llama-3.2-3b-instruct": { isOpen: true, organization: "Meta" },
+          "llama-3.2-vision-11b-instruct": { isOpen: true, organization: "Meta" },
+          "llama-3.2-vision-90b-instruct": { isOpen: true, organization: "Meta" },
+          "llama-3.3-70b-instruct": { isOpen: true, organization: "Meta" },
+          "llama-3.3-nemotron-49b-super-v1": { isOpen: true, organization: "NVIDIA" },
+          "llama2-70b-steerlm-chat": { deprecated: true, isOpen: true, organization: "NVIDIA" },
+          "llava-v1.6-34b": { isOpen: true },
+          "minicpm-v-2_6": { isOpen: true },
+          "ministral-8b-2410": { isOpen: true, organization: "Mistral" },
+          "mistral-7b-instruct": { isOpen: true, organization: "Mistral" },
+          "mistral-7b-instruct-v0.2": { isOpen: true, organization: "Mistral" },
+          "mistral-large-2402": { organization: "Mistral" },
+          "mistral-large-2407": { isOpen: true, organization: "Mistral" },
+          "mistral-large-2411": { isOpen: true, organization: "Mistral" },
+          "mistral-medium": { organization: "Mistral" },
+          "mistral-next": { organization: "Mistral" },
+          "mistral-small-24b-instruct-2501": { isOpen: true, organization: "Mistral" },
+          "mixtral-8x22b-instruct-v0.1": { isOpen: true, organization: "Mistral" },
+          "mixtral-8x7b-instruct-v0.1": { isOpen: true, organization: "Mistral" },
+          "molmo-72b-0924": { isOpen: true, organization: "Allen" },
+          "molmo-7b-d-0924": { isOpen: true, organization: "Allen" },
+          "mpt-30b-chat": { isOpen: true },
+          "mpt-7b-chat": { isOpen: true },
+          "nemotron-4-340b-instruct": { isOpen: true, organization: "NVIDIA" },
+          "nous-hermes-2-mixtral-8x7b-dpo": { isOpen: true },
+          "o1-mini": { organization: "OpenAI" },
+          "o1-preview": { organization: "OpenAI" },
+          "o1-2024-12-17": { organization: "OpenAI" },
+          "o3-mini": { organization: "OpenAI" },
+          "o3-mini-high": { organization: "OpenAI" },
+          "oasst-pythia-12b": { isOpen: true },
+          "olmo-7b-instruct": { isOpen: true },
+          "openchat-3.5": { isOpen: true },
+          "openchat-3.5-0106": { isOpen: true },
+          "openhermes-2.5-mistral-7b": { isOpen: true },
+          "palm-2": { organization: "Google" },
+          "phi-3-medium-4k-instruct": { isOpen: true, organization: "Microsoft" },
+          "phi-3-mini-128k-instruct": { isOpen: true, organization: "Microsoft" },
+          "phi-3-mini-4k-instruct": { isOpen: true, organization: "Microsoft" },
+          "phi-3-mini-4k-instruct-june-2024": { isOpen: true, organization: "Microsoft" },
+          "phi-3-small-8k-instruct": { isOpen: true, organization: "Microsoft" },
+          "phi-3-vision-128k-instruct": { isOpen: true, organization: "Microsoft" },
+          "phi-3.5-vision-instruct": { isOpen: true, organization: "Microsoft" },
+          "phi-4": { isOpen: true, organization: "Microsoft" },
+          "pixtral-12b-2409": { isOpen: true, organization: "Mistral" },
+          "pixtral-large-2411": { isOpen: true, organization: "Mistral" },
+          "qwen-14b-chat": { deprecated: true, isOpen: true, organization: "Qwen" },
+          "qwen-max-0428": { organization: "Qwen" },
+          "qwen-max-0919": { organization: "Qwen" },
+          "qwen-plus-0828": { deprecated: true, organization: "Qwen" },
+          "qwen-plus-0125": { organization: "Qwen" },
+          "qwen-vl-max-1119": { organization: "Qwen" },
+          "qwen1.5-110b-chat": { deprecated: true, isOpen: true, organization: "Qwen" },
+          "qwen1.5-14b-chat": { deprecated: true, isOpen: true, organization: "Qwen" },
+          "qwen1.5-32b-chat": { deprecated: true, isOpen: true, organization: "Qwen" },
+          "qwen1.5-4b-chat": { deprecated: true, isOpen: true, organization: "Qwen" },
+          "qwen1.5-72b-chat": { deprecated: true, isOpen: true, organization: "Qwen" },
+          "qwen1.5-7b-chat": { deprecated: true, isOpen: true, organization: "Qwen" },
+          "qwen2-72b-instruct": { isOpen: true, organization: "Qwen" },
+          "qwen2-vl-72b": { isOpen: true, organization: "Qwen" },
+          "qwen2-vl-7b-instruct": { isOpen: true, organization: "Qwen" },
+          "qwen2.5-vl-72b-instruct": { isOpen: true, organization: "Qwen" },
+          "qwen2.5-72b-instruct": { isOpen: true, organization: "Qwen" },
+          "qwen2.5-coder-32b-instruct": { isOpen: true, organization: "Qwen" },
+          "qwen2.5-plus-1127": { organization: "Qwen" },
+          "qwq-32b-preview": { isOpen: true, organization: "Qwen" },
+          "qwq-32b": { isOpen: true, organization: "Qwen" },
+          "qwen2.5-max": { organization: "Qwen" },
+          "reka-core-20240501": { deprecated: true, organization: "Reka AI" },
+          "reka-core-20240722": { deprecated: true, organization: "Reka AI" },
+          "reka-core-20240904": { organization: "Reka AI" },
+          "reka-flash-20240722": { deprecated: true, organization: "Reka AI" },
+          "reka-flash-20240904": { organization: "Reka AI" },
+          "reka-flash-21b-20240226": { organization: "Reka AI" },
+          "reka-flash-21b-20240226-online": { organization: "Reka AI" },
+          "reka-flash-preview-20240611": { deprecated: true, organization: "Reka AI" },
+          "RWKV-4-Raven-14B": { isOpen: true },
+          "snowflake-arctic-instruct": { isOpen: true },
+          "stablelm-tuned-alpha-7b": { isOpen: true },
+          "starling-lm-7b-alpha": { isOpen: true },
+          "starling-lm-7b-beta": { isOpen: true },
+          "stripedhyena-nous-7b": { isOpen: true },
+          "smollm2-1.7b-instruct": { isOpen: true },
+          "vicuna-13b": { isOpen: true },
+          "vicuna-33b": { isOpen: true },
+          "vicuna-7b": { isOpen: true },
+          "wizardlm-13b": { isOpen: true },
+          "wizardlm-70b": { isOpen: true },
+          "yi-1.5-34b-chat": { isOpen: true, organization: "01" },
+          "yi-34b-chat": { isOpen: true, organization: "01" },
+          "yi-large": { organization: "01" },
+          "yi-large-preview": { organization: "01" },
+          "yi-lightning": { organization: "01" },
+          "yi-lightning-lite": { organization: "01" },
+          "yi-vision": { organization: "01" },
+          "zephyr-7b-alpha": { isOpen: true },
+          "zephyr-7b-beta": { isOpen: true },
+          "zephyr-orpo-141b-A35b-v0.1": { isOpen: true },
+          // Image models
+          "reve": { organization: "Reve" },
+          "gpt-4o": { organization: "OpenAI" },
+          "recraft-3": { organization: "Recraft" },
+          "recraft-v3": { organization: "Recraft" }, // From image_arena, align name
+          "imagen-3.0-generate-002": { organization: "Google" }, // From image_arena, align name
+          "imagen-3-generate-002": { organization: "Google" },
+          "flux-1.1-pro": { organization: "Black Forest Labs" },
+          "flux-1-pro": { organization: "Black Forest Labs" },
+          "image-01": { organization: "Minimax" },
+          "flux-1-dev": { isOpen: true, organization: "Black Forest Labs" },
+          "flux-1-dev-fp8": { isOpen: true, organization: "Black Forest Labs" }, // From image_arena, align name
+          "ideogram-2": { organization: "Ideogram" },
+          "ideogram-v2": { organization: "Ideogram" }, // From image_arena, align name
+          "ideogram-2-turbo": { organization: "Ideogram" },
+          "stable-diffusion-3.5-large-turbo": { isOpen: true, organization: "Stability" },
+          "luma-photon": { organization: "Luma" },
+          "photon": { organization: "Luma" }, // From image_arena, align name
+          "stable-diffusion-3.5-large": { isOpen: true, organization: "Stability" },
+          "stable-diffusion-v35-large": { isOpen: true, organization: "Stability" }, // From image_arena, align name
+          "infinity-8b": { isOpen: true },
+          "ideogram-1": { deprecated: true, organization: "Ideogram" },
+          "stable-diffusion-3-large": { organization: "Stability" },
+          "stable-diffusion-3-large-turbo": { organization: "Stability" },
+          "stable-diffusion-3-medium": { organization: "Stability" },
+          "flux-1-schnell": { isOpen: true, organization: "Black Forest Labs" },
+          "playground-3": { organization: "Playground" },
+          "ideogram-2a": { organization: "Ideogram" },
+          "ideogram-2a-turbo": { organization: "Ideogram" },
+          "gemini-2-flash-experimental": { organization: "Google" },
+          "playground-2.5": { isOpen: true, organization: "Playground" },
+          "dalle-3-hd": { organization: "OpenAI" },
+          "stable-diffusion-3.5-medium": { isOpen: true, organization: "Stability" },
+          "dalle-3": { organization: "OpenAI" },
+          "dall-e-3": { organization: "OpenAI" }, // From image_arena, align name
+          "dalle-2": { deprecated: true, organization: "OpenAI" },
+          "stable-diffusion-xl-1": { isOpen: true, organization: "Stability" },
+          "stable-diffusion-xl-turbo": { isOpen: true, organization: "Stability" },
+          "janus-pro": { isOpen: true, organization: "DeepSeek" },
+          "amazon-titan-g1-2": { organization: "Amazon" },
+          "adobe-firefly-3": { organization: "Adobe" },
+          "midjourney-6": { organization: "Midjourney" },
+          "midjourney-6.1": { organization: "Midjourney" },
+          "lumina-image-2": {},
+          "amazon-titan-g1": { organization: "Amazon" },
+          "stable-diffusion-2.1": { isOpen: true, organization: "Stability" },
+          "phoenix-1-ultra": {},
+          "phoenix-1-fast": {},
+          "phoenix-0.9-ultra": {},
+          "ideogram-3": { organization: "Ideogram" },
+          "luma-photon-flash": { organization: "Luma" },
+          "stable-diffusion-1.6": { isOpen: true, organization: "Stability" },
+          "sdxl-lightning": { isOpen: true },
+          "stable-diffusion-1.5": { isOpen: true, organization: "Stability" },
+          "recraft-20b": { organization: "Recraft" }
         };
 
-        async function loadData() {
-            try {
-                const [textRes, visionRes, imgArenaRes, imgArtRes, imgFalRes] = await Promise.all([
-                    fetch('./assets/results.json'),
-                    fetch('./assets/results.json'), // Vision is in the same file
-                    fetch('./assets/image_arena.json'),
-                    fetch('./assets/image_artificial.json'),
-                    fetch('./assets/image_fal.json')
-                ]);
+        // --- Global Data Store ---
+        let allData = {};
+        let currentModels = []; // The models currently displayed
 
-                if (!textRes.ok || !visionRes.ok || !imgArenaRes.ok || !imgArtRes.ok || !imgFalRes.ok) {
-                   throw new Error('Failed to load one or more data files');
+        // --- State Variables ---
+        let currentParadigm = 'text';
+        let currentCategory = 'full';
+        let styleControl = false;
+        let searchText = '';
+        let showOpenOnly = false;
+        let filterStrategy = 'hideDeprecated'; // 'showAll', 'hideDeprecated', 'hideOld', 'onePerOrg'
+        let rankStrategy = 'comparable'; // 'comparable', 'league'
+
+        // --- DOM Elements ---
+        const paradigmSelect = document.getElementById('paradigmSelect');
+        const categorySelect = document.getElementById('categorySelect');
+        const styleControlCheckbox = document.getElementById('styleControlCheckbox');
+        const styleControlLabel = document.getElementById('styleControlLabel');
+        const searchBox = document.getElementById('searchBox');
+        const openSourceCheckbox = document.getElementById('openSourceCheckbox');
+        const filterStrategySelect = document.getElementById('filterStrategySelect');
+        const tableBody = document.querySelector('#leaderboardTable tbody');
+        const ciHeader = document.getElementById('ciHeader');
+        const rankStrategyRadios = document.querySelectorAll('input[name="rankStrategy"]');
+
+        // --- Available Categories ---
+        const categories = {
+            text: {
+                Overall: "full", "Hard prompts": "hard_6", "Hard prompts (english)": "hard_english_6",
+                "Longer query": "long_user", Multiturn: "multiturn", English: "english", Math: "math",
+                "Instruction following": "if", "Creative writing": "creative_writing", Coding: "coding",
+                Chinese: "chinese", French: "french", German: "german", Japanese: "japanese",
+                Korean: "korean", Russian: "russian", Spanish: "spanish",
+                "Exclude <5 tok query": "no_short", "Exclude refusal": "no_refusal"
+            },
+            vision: { Overall: "full", English: "english", Chinese: "chinese" },
+            image_arena: { Overall: "full" },
+            image_artificial: { Overall: "full" },
+            image_fal: { Overall: "full" },
+        };
+
+        // --- Helper Functions ---
+        function formatCI(rating, low, high) {
+            if (low === undefined || high === undefined || low === rating || high === rating) {
+                return '-';
+            }
+            const minus = Math.round(rating - low);
+            const plus = Math.round(high - rating);
+            if (isNaN(minus) || isNaN(plus) || minus < 0 || plus < 0) return '-'; // Basic sanity check
+            return `+${plus}/-${minus}`;
+        }
+
+        function getModelLink(name) {
+             const metadata = modelMetadata[name];
+
+            if (metadata?.isOpen) {
+              return `https://huggingface.co/models?search=${encodeURIComponent(name)}`;
+            }
+
+            const orgToUrl = {
+              OpenAI: "https://platform.openai.com/docs/models/",
+              Amazon: "https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html", // More specific
+              Anthropic: "https://www.anthropic.com/claude",
+              Google: "https://ai.google.dev/models/",
+              DeepSeek: "https://www.deepseek.com/",
+              Meta: "https://ai.meta.com/llama/",
+              Mistral: "https://mistral.ai/",
+              Qwen: "https://huggingface.co/Qwen/",
+              xAI: "https://x.ai/",
+              "01": "https://www.01.ai/",
+              "Black Forest Labs": "https://blackforestlabs.ai/",
+              "Reka AI": "https://www.reka.ai/ourmodels",
+              Stability: "https://platform.stability.ai/",
+              Ideogram: "https://ideogram.ai/",
+              Recraft: "https://recraft.ai/",
+              Luma: "https://lumalabs.ai/",
+              Playground: "https://playground.com/",
+              Adobe: "https://firefly.adobe.com/",
+              Midjourney: "https://www.midjourney.com/",
+              Minimax: "https://api.minimax.chat/document/introduction",
+              NexusFlow: "https://nexusflow.ai/",
+              Cohere: "https://cohere.com/models",
+              AI21: "https://www.ai21.com/blog/introducing-jamba",
+              Allen: "https://allenai.org/llm-leaderboard" // Placeholder
+            };
+
+            if (metadata?.organization && metadata.organization in orgToUrl) {
+              return orgToUrl[metadata.organization];
+            }
+
+            return undefined;
+        }
+
+        function shouldShowModel(modelName, metadata, strategy, allModelsData) {
+            switch (strategy) {
+                case "showAll":
+                    return true;
+                case "hideDeprecated":
+                    return !metadata?.deprecated;
+                case "hideOld": {
+                    if (metadata?.deprecated) return false;
+                    if (!metadata?.organization) return true; // Show if no org info
+
+                    const thisModelData = allModelsData.find(m => m.name === modelName);
+                    if (!thisModelData) return true; // Should not happen
+
+                    const org = metadata.organization;
+                    // Find if there's any *better* model from the same org
+                    return !allModelsData.some(other => {
+                        const otherMeta = modelMetadata[other.name];
+                        return otherMeta?.organization === org &&
+                               other.rating > thisModelData.rating;
+                    });
                 }
+                case "onePerOrg":
+                    if (!metadata?.organization) return true; // Show if no org info
+                    const orgModels = allModelsData.filter(
+                        m => modelMetadata[m.name]?.organization === metadata.organization
+                    );
+                     if (orgModels.length === 0) return true; // Should not happen
 
-                const textData = await textRes.json();
-                const visionData = await visionRes.json(); // Assume vision is in results.json too
-
-                allData = {
-                    text: textData.text || {},
-                    vision: visionData.vision || {},
-                    image_arena: await imgArenaRes.json(),
-                    image_artificial: await imgArtRes.json(),
-                    image_fal: await imgFalRes.json()
-                };
-
-                //console.log("Data loaded:", allData); // Debug: Check loaded data
-                updateCategoryOptions();
-                updateTable();
-            } catch (error) {
-                console.error("Error loading data:", error);
-                tableBody.innerHTML = `<tr><td colspan="3">Error loading data. Check console and file paths.</td></tr>`;
+                    const bestOrgModel = orgModels.reduce((best, current) =>
+                        current.rating > best.rating ? current : best
+                    );
+                    return bestOrgModel.name === modelName;
+                default: return true;
             }
         }
 
-        function updateCategoryOptions() {
-            const selectedParadigm = paradigmSelect.value;
-            const options = paradigmCategories[selectedParadigm] || {};
-            categorySelect.innerHTML = ''; // Clear existing options
 
-            for (const [label, value] of Object.entries(options)) {
-                // Check if the category actually exists in the loaded data for the paradigm
-                if (allData[selectedParadigm] && allData[selectedParadigm][value]) {
-                    const option = document.createElement('option');
-                    option.value = value;
-                    option.textContent = label;
-                    categorySelect.appendChild(option);
-                } else {
-                    //console.warn(`Category '${value}' not found in data for paradigm '${selectedParadigm}'`);
-                }
-            }
-
-            // Disable category selector if only one option ("Overall") or none
-            categorySelect.style.display = Object.keys(options).length > 1 ? 'inline-block' : 'none';
-            categorySelect.parentElement.style.display = Object.keys(options).length > 1 ? 'inline-block' : 'none';
-
-            // If the current category value isn't valid for the new paradigm, reset to 'full' if possible
-            const currentCategoryValue = categorySelect.value;
-            const validCategories = Object.values(options);
-            if (!validCategories.includes(currentCategoryValue) && validCategories.includes('full')) {
-                categorySelect.value = 'full';
-            }
-            // Trigger update if category changed implicitly
-             if (categorySelect.value !== currentCategoryValue) {
-                 updateTable();
-             }
-        }
-
-        function updateTable() {
-            const selectedParadigm = paradigmSelect.value;
-            const selectedCategory = categorySelect.value;
-            const searchTerm = searchInput.value.toLowerCase();
-
-            //console.log(`Updating table for Paradigm: ${selectedParadigm}, Category: ${selectedCategory}, Search: "${searchTerm}"`); // Debug
-
-            const boardData = allData[selectedParadigm];
-            if (!boardData) {
-                tableBody.innerHTML = `<tr><td colspan="3">No data for paradigm '${selectedParadigm}'.</td></tr>`;
+        // --- Main Rendering Logic ---
+        function renderTable() {
+            const board = allData[currentParadigm];
+            if (!board) {
+                tableBody.innerHTML = '<tr><td colspan="4">No data available for this paradigm.</td></tr>';
                 return;
             }
 
-            const categoryData = boardData[selectedCategory];
+            const categoryKey = `${currentCategory}${styleControl ? '_style_control' : ''}`;
+            const categoryData = board[categoryKey];
+
             if (!categoryData || !categoryData.elo_rating_final) {
-                tableBody.innerHTML = `<tr><td colspan="3">No data for category '${selectedCategory}' in paradigm '${selectedParadigm}'.</td></tr>`;
-                //console.warn("Missing category data:", selectedParadigm, selectedCategory, categoryData); // Debug
-                return;
+                 tableBody.innerHTML = `<tr><td colspan="4">No data for category: ${categoryKey}. Try turning off Style Control.</td></tr>`;
+                 // Hide CI header if no data or no CI data
+                 const hasCiData = categoryData?.confidence_intervals && Object.keys(categoryData.confidence_intervals).length > 0;
+                 ciHeader.style.display = hasCiData ? '' : 'none';
+                 return;
             }
 
-            let models = Object.entries(categoryData.elo_rating_final)
-                .map(([name, rating]) => ({
+            const ratings = categoryData.elo_rating_final;
+            const confidenceIntervals = categoryData.confidence_intervals || {};
+
+             // --- Initial Data Preparation ---
+             let allModelsData = Object.entries(ratings).map(([name, rating]) => {
+                const ci = confidenceIntervals[name] || {};
+                const ratingNum = Number(rating);
+                return {
                     name,
-                    rating: Number(rating)
-                }))
-                .filter(model => model.name.toLowerCase().includes(searchTerm));
+                    rating: ratingNum,
+                    ciLow: Number(ci.low) || ratingNum,
+                    ciHigh: Number(ci.high) || ratingNum,
+                    rank: 0 // Placeholder
+                };
+            });
 
-            models.sort((a, b) => b.rating - a.rating);
+            // Sort for 'hideOld' and 'onePerOrg' filtering before other filters
+             allModelsData.sort((a, b) => b.rating - a.rating);
 
+
+            // --- Filtering ---
+            let filteredModels = allModelsData.filter(model => {
+                const metadata = modelMetadata[model.name] || {};
+
+                // Filter Strategy (Applied first based on the full sorted list)
+                 if (!shouldShowModel(model.name, metadata, filterStrategy, allModelsData)) {
+                    return false;
+                }
+
+                // Open Source Filter
+                if (showOpenOnly && !metadata.isOpen) {
+                    return false;
+                }
+
+                // Search Filter
+                if (searchText) {
+                    const lowerSearch = searchText.toLowerCase();
+                    if (!model.name.toLowerCase().includes(lowerSearch)) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+
+
+            // --- Ranking (on the finally filtered list) ---
+             filteredModels.sort((a, b) => b.rating - a.rating); // Re-sort after filtering
+
+            let rank = 0;
+            let currentRankDisplay = 0;
+            let previousModel = null;
+
+            filteredModels.forEach((model, index) => {
+                 let tiedWithPrevious = false;
+                 if (previousModel) {
+                    if (rankStrategy === 'league') {
+                         // Simple threshold difference for 'league'
+                         tiedWithPrevious = Math.abs(model.rating - previousModel.rating) <= 70;
+                    } else { // 'comparable' strategy (default)
+                         // Check for CI overlap
+                         tiedWithPrevious = model.ciHigh >= previousModel.ciLow;
+                    }
+                 }
+
+                 if (!tiedWithPrevious || index === 0) {
+                     rank = index + 1; // Set rank based on position in the sorted *filtered* list
+                     currentRankDisplay = rank; // Update the display rank
+                 }
+                 model.rank = currentRankDisplay; // Assign the possibly tied rank
+                 previousModel = model;
+            });
+
+            // --- DOM Update ---
             tableBody.innerHTML = ''; // Clear previous rows
+            const hasCiData = Object.keys(confidenceIntervals).length > 0;
+            ciHeader.style.display = hasCiData ? '' : 'none';
 
-            if (models.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="3">No models found${searchTerm ? ' matching "' + searchTerm + '"': ''}.</td></tr>`;
+            if (filteredModels.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="${hasCiData ? 4 : 3}">No models match the current filters.</td></tr>`;
                 return;
             }
 
-            models.forEach((model, index) => {
-                const rank = index + 1; // Simple rank based on sorted order
+            filteredModels.forEach(model => {
+                const metadata = modelMetadata[model.name] || {};
+                const link = getModelLink(model.name);
+                const ciString = hasCiData ? formatCI(model.rating, model.ciLow, model.ciHigh) : '';
+
                 const row = document.createElement('tr');
 
                 const rankCell = document.createElement('td');
-                rankCell.textContent = rank;
-                rankCell.classList.add('rank');
+                rankCell.textContent = model.rank;
+                row.appendChild(rankCell);
 
-                const modelCell = document.createElement('td');
-                modelCell.textContent = model.name;
+                const nameCell = document.createElement('td');
+                const nameContent = document.createElement('span'); // Use span for text content
+                nameContent.textContent = model.name;
+
+                if (link) {
+                    const anchor = document.createElement('a');
+                    anchor.href = link;
+                    anchor.target = "_blank";
+                    anchor.rel = "noopener noreferrer";
+                    anchor.appendChild(nameContent); // Wrap the text span with the link
+                    nameCell.appendChild(anchor);
+                } else {
+                    nameCell.appendChild(nameContent); // Just append the text span
+                }
+
+
+                if (metadata.isOpen) {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge';
+                    badge.textContent = 'open';
+                    nameCell.appendChild(badge);
+                }
+                 if (metadata.deprecated) {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge';
+                    badge.textContent = 'deprecated';
+                    badge.style.backgroundColor = '#f8d7da'; // Example styling for deprecated
+                    badge.style.color = '#721c24';
+                    nameCell.appendChild(badge);
+                }
+                row.appendChild(nameCell);
 
                 const ratingCell = document.createElement('td');
                 ratingCell.textContent = Math.round(model.rating);
-                ratingCell.classList.add('rating');
-
-
-                row.appendChild(rankCell);
-                row.appendChild(modelCell);
                 row.appendChild(ratingCell);
+
+                if (hasCiData) {
+                    const ciCell = document.createElement('td');
+                    ciCell.textContent = ciString;
+                    row.appendChild(ciCell);
+                }
+
                 tableBody.appendChild(row);
             });
         }
 
-        // Event Listeners
-        paradigmSelect.addEventListener('change', () => {
-            updateCategoryOptions();
-            updateTable(); // Update table after category options are potentially reset
-        });
-        categorySelect.addEventListener('change', updateTable);
-        searchInput.addEventListener('input', updateTable);
+        // --- Update UI Elements ---
+        function updateCategoryDropdown() {
+            const availableCategories = categories[currentParadigm] || { Overall: "full" };
+            categorySelect.innerHTML = ''; // Clear existing options
 
-        // Initial Load
-        loadData();
+            let categoryFound = false;
+            Object.entries(availableCategories).forEach(([label, value]) => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = label;
+                if (value === currentCategory) {
+                    option.selected = true;
+                    categoryFound = true;
+                }
+                categorySelect.appendChild(option);
+            });
+
+            // If the previously selected category doesn't exist in the new paradigm, default to 'full'
+            if (!categoryFound) {
+                currentCategory = 'full';
+                if (categorySelect.options.length > 0) {
+                     categorySelect.value = 'full'; // Ensure 'full' is selected in the UI if it exists
+                }
+            }
+
+            updateStyleControlVisibility(); // Check visibility after updating categories
+            renderTable(); // Re-render after potential category change
+        }
+
+         function updateStyleControlVisibility() {
+            const board = allData[currentParadigm];
+            const categoryKeyWithStyle = `${currentCategory}_style_control`;
+            const showStyleControl = board && board.hasOwnProperty(categoryKeyWithStyle);
+
+            styleControlLabel.style.display = showStyleControl ? 'inline-flex' : 'none';
+
+            // If style control becomes hidden, ensure it's unchecked
+            if (!showStyleControl && styleControl) {
+                styleControl = false;
+                styleControlCheckbox.checked = false;
+            }
+         }
+
+
+        // --- Event Listeners Setup ---
+        paradigmSelect.addEventListener('change', (e) => {
+            currentParadigm = e.target.value;
+            currentCategory = 'full'; // Reset category when paradigm changes
+            styleControl = false; // Reset style control
+            styleControlCheckbox.checked = false;
+            updateCategoryDropdown(); // This will call renderTable
+        });
+
+        categorySelect.addEventListener('change', (e) => {
+            currentCategory = e.target.value;
+            updateStyleControlVisibility(); // Check if style control applies
+            renderTable();
+        });
+
+         styleControlCheckbox.addEventListener('change', (e) => {
+            styleControl = e.target.checked;
+            renderTable();
+         });
+
+        searchBox.addEventListener('input', (e) => {
+            searchText = e.target.value;
+            renderTable();
+        });
+
+        openSourceCheckbox.addEventListener('change', (e) => {
+            showOpenOnly = e.target.checked;
+            renderTable();
+        });
+
+        filterStrategySelect.addEventListener('change', (e) => {
+            filterStrategy = e.target.value;
+            renderTable();
+        });
+
+         rankStrategyRadios.forEach(radio => {
+             radio.addEventListener('change', (e) => {
+                 if (e.target.checked) {
+                    rankStrategy = e.target.value;
+                    renderTable();
+                 }
+             });
+         });
+
+        // --- Initial Load ---
+        async function loadData() {
+            try {
+                 const [resultsRes, arenaRes, artificialRes, falRes] = await Promise.all([
+                     fetch('./results.json'),
+                     fetch('./image_arena.json'),
+                     fetch('./image_artificial.json'),
+                     fetch('./image_fal.json')
+                 ]);
+
+                 if (!resultsRes.ok || !arenaRes.ok || !artificialRes.ok || !falRes.ok) {
+                     throw new Error('Failed to fetch leaderboard data');
+                 }
+
+                 allData.text = (await resultsRes.json()).text;
+                 allData.vision = (await resultsRes.json()).vision;
+                 allData.image_arena = await arenaRes.json();
+                 allData.image_artificial = await artificialRes.json();
+                 allData.image_fal = await falRes.json();
+
+                 console.log("Data loaded:", allData); // Debug log
+                 updateCategoryDropdown(); // Initial population and render
+
+            } catch (error) {
+                console.error("Error loading data:", error);
+                tableBody.innerHTML = '<tr><td colspan="4">Error loading leaderboard data. Make sure JSON files are in the same directory.</td></tr>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadData);
 
     </script>
 
