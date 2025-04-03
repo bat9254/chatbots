@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Model Leaderboard</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            padding: 1em;
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #eee;
+            border-radius: 8px;
+        }
+        .controls label {
+            margin-right: 5px;
+            font-weight: bold;
+        }
+        .controls select,
+        .controls input[type="text"] {
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .controls input[type="text"] {
+            flex-grow: 1;
+            min-width: 150px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .rank {
+            text-align: center;
+            font-weight: bold;
+        }
+        .rating {
+            text-align: right;
+            font-family: monospace;
+        }
+         /* Basic dark mode */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #222;
+                color: #eee;
+            }
+            .controls {
+                background-color: #333;
+            }
+            .controls select,
+            .controls input[type="text"] {
+                 background-color: #444;
+                 color: #eee;
+                 border-color: #555;
+            }
+            table {
+                 background-color: #2a2a2a;
+                 box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+            }
+             th, td {
+                 border-color: #444;
+            }
+             th {
+                 background-color: #3a3a3a;
+            }
+             tr:nth-child(even) {
+                 background-color: #333;
+            }
+             tr:hover {
+                 background-color: #404040;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Model Leaderboard</h1>
+
+    <div class="controls">
+        <div>
+            <label for="paradigm-select">Paradigm:</label>
+            <select id="paradigm-select">
+                <option value="text">Text</option>
+                <option value="vision">Vision</option>
+                <option value="image_arena">Image (LM Arena)</option>
+                <option value="image_artificial">Image (Artificial Analysis)</option>
+                <option value="image_fal">Image (Fal)</option>
+            </select>
+        </div>
+        <div>
+            <label for="category-select">Category:</label>
+            <select id="category-select">
+                <!-- Options populated by JS -->
+            </select>
+        </div>
+        <div>
+            <label for="search-input">Search:</label>
+            <input type="text" id="search-input" placeholder="Filter models...">
+        </div>
+    </div>
+
+    <table id="leaderboard-table">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Model</th>
+                <th>Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows populated by JS -->
+            <tr><td colspan="3">Loading data...</td></tr>
+        </tbody>
+    </table>
+
+    <script>
+        const paradigmSelect = document.getElementById('paradigm-select');
+        const categorySelect = document.getElementById('category-select');
+        const searchInput = document.getElementById('search-input');
+        const tableBody = document.querySelector('#leaderboard-table tbody');
+
+        let allData = {}; // To store loaded JSON data
+        let categoryOptions = {}; // To store categories for each paradigm
+
+        // Available categories (mirroring the Svelte app)
+        const paradigmCategories = {
+            text: {
+                "Overall": "full", "Hard prompts": "hard_6", "Hard prompts (english)": "hard_english_6",
+                "Longer query": "long_user", "Multiturn": "multiturn", "English": "english",
+                "Math": "math", "Instruction following": "if", "Creative writing": "creative_writing",
+                "Coding": "coding", "Chinese": "chinese", "French": "french", "German": "german",
+                "Japanese": "japanese", "Korean": "korean", "Russian": "russian", "Spanish": "spanish",
+                "Exclude <5 tok query": "no_short", "Exclude refusal": "no_refusal"
+            },
+            vision: { "Overall": "full", "English": "english", "Chinese": "chinese" },
+            image_arena: { "Overall": "full" },
+            image_artificial: { "Overall": "full" },
+            image_fal: { "Overall": "full" }
+        };
+
+        async function loadData() {
+            try {
+                const [textRes, visionRes, imgArenaRes, imgArtRes, imgFalRes] = await Promise.all([
+                    fetch('./assets/results.json'),
+                    fetch('./assets/results.json'), // Vision is in the same file
+                    fetch('./assets/image_arena.json'),
+                    fetch('./assets/image_artificial.json'),
+                    fetch('./assets/image_fal.json')
+                ]);
+
+                if (!textRes.ok || !visionRes.ok || !imgArenaRes.ok || !imgArtRes.ok || !imgFalRes.ok) {
+                   throw new Error('Failed to load one or more data files');
+                }
+
+                const textData = await textRes.json();
+                const visionData = await visionRes.json(); // Assume vision is in results.json too
+
+                allData = {
+                    text: textData.text || {},
+                    vision: visionData.vision || {},
+                    image_arena: await imgArenaRes.json(),
+                    image_artificial: await imgArtRes.json(),
+                    image_fal: await imgFalRes.json()
+                };
+
+                //console.log("Data loaded:", allData); // Debug: Check loaded data
+                updateCategoryOptions();
+                updateTable();
+            } catch (error) {
+                console.error("Error loading data:", error);
+                tableBody.innerHTML = `<tr><td colspan="3">Error loading data. Check console and file paths.</td></tr>`;
+            }
+        }
+
+        function updateCategoryOptions() {
+            const selectedParadigm = paradigmSelect.value;
+            const options = paradigmCategories[selectedParadigm] || {};
+            categorySelect.innerHTML = ''; // Clear existing options
+
+            for (const [label, value] of Object.entries(options)) {
+                // Check if the category actually exists in the loaded data for the paradigm
+                if (allData[selectedParadigm] && allData[selectedParadigm][value]) {
+                    const option = document.createElement('option');
+                    option.value = value;
+                    option.textContent = label;
+                    categorySelect.appendChild(option);
+                } else {
+                    //console.warn(`Category '${value}' not found in data for paradigm '${selectedParadigm}'`);
+                }
+            }
+
+            // Disable category selector if only one option ("Overall") or none
+            categorySelect.style.display = Object.keys(options).length > 1 ? 'inline-block' : 'none';
+            categorySelect.parentElement.style.display = Object.keys(options).length > 1 ? 'inline-block' : 'none';
+
+            // If the current category value isn't valid for the new paradigm, reset to 'full' if possible
+            const currentCategoryValue = categorySelect.value;
+            const validCategories = Object.values(options);
+            if (!validCategories.includes(currentCategoryValue) && validCategories.includes('full')) {
+                categorySelect.value = 'full';
+            }
+            // Trigger update if category changed implicitly
+             if (categorySelect.value !== currentCategoryValue) {
+                 updateTable();
+             }
+        }
+
+        function updateTable() {
+            const selectedParadigm = paradigmSelect.value;
+            const selectedCategory = categorySelect.value;
+            const searchTerm = searchInput.value.toLowerCase();
+
+            //console.log(`Updating table for Paradigm: ${selectedParadigm}, Category: ${selectedCategory}, Search: "${searchTerm}"`); // Debug
+
+            const boardData = allData[selectedParadigm];
+            if (!boardData) {
+                tableBody.innerHTML = `<tr><td colspan="3">No data for paradigm '${selectedParadigm}'.</td></tr>`;
+                return;
+            }
+
+            const categoryData = boardData[selectedCategory];
+            if (!categoryData || !categoryData.elo_rating_final) {
+                tableBody.innerHTML = `<tr><td colspan="3">No data for category '${selectedCategory}' in paradigm '${selectedParadigm}'.</td></tr>`;
+                //console.warn("Missing category data:", selectedParadigm, selectedCategory, categoryData); // Debug
+                return;
+            }
+
+            let models = Object.entries(categoryData.elo_rating_final)
+                .map(([name, rating]) => ({
+                    name,
+                    rating: Number(rating)
+                }))
+                .filter(model => model.name.toLowerCase().includes(searchTerm));
+
+            models.sort((a, b) => b.rating - a.rating);
+
+            tableBody.innerHTML = ''; // Clear previous rows
+
+            if (models.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="3">No models found${searchTerm ? ' matching "' + searchTerm + '"': ''}.</td></tr>`;
+                return;
+            }
+
+            models.forEach((model, index) => {
+                const rank = index + 1; // Simple rank based on sorted order
+                const row = document.createElement('tr');
+
+                const rankCell = document.createElement('td');
+                rankCell.textContent = rank;
+                rankCell.classList.add('rank');
+
+                const modelCell = document.createElement('td');
+                modelCell.textContent = model.name;
+
+                const ratingCell = document.createElement('td');
+                ratingCell.textContent = Math.round(model.rating);
+                ratingCell.classList.add('rating');
+
+
+                row.appendChild(rankCell);
+                row.appendChild(modelCell);
+                row.appendChild(ratingCell);
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Event Listeners
+        paradigmSelect.addEventListener('change', () => {
+            updateCategoryOptions();
+            updateTable(); // Update table after category options are potentially reset
+        });
+        categorySelect.addEventListener('change', updateTable);
+        searchInput.addEventListener('input', updateTable);
+
+        // Initial Load
+        loadData();
+
+    </script>
+
+</body>
+</html>
